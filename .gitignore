@@ -1,1 +1,12 @@
+<<<<<<< HEAD
 .serverless
+=======
+.serverless
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+htmlcov
+>>>>>>> 9a8989c (implementação nuve)

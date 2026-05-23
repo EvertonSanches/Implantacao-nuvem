@@ -1,0 +1,38 @@
+service: implantacao-nuvem
+
+frameworkVersion: '4'
+useDotenv: true
+
+
+provider:
+  name: aws
+  runtime: python3.14
+  region: ${opt:region, 'sa-east-1'}
+  stage: ${opt:stage, 'desenvolvimento'}
+  logRetentionInDays: 3
+  environment:
+    APP_ENVIRONMENT: ${self:provider.stage}
+    ALLOWED_ORIGINS: ${env:ALLOWED_ORIGINS}
+
+functions:
+  API:
+    handler: main.handle
+    timeout: 10
+    memorySize: 512
+    events:
+      - http:
+          path: /{proxy+}
+          method: any
+          cors:
+            origin: ${env:ALLOWED_ORIGINS}
+            maxAge: 60
+
+custom:
+  pythonRequirements:
+    usePoetry: true
+    noDeploy:
+      - boto3  # necessário para desenvolvimento local, mas já presente no ambiente Lambda
+      - botocore  # necessário para desenvolvimento local, mas já presente no ambiente Lambda
+
+plugins:
+  - serverless-python-requirements
